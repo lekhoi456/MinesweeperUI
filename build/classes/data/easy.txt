@@ -1,13 +1,23 @@
-6
-Khoiiiii
+11
+Nguyen Le Khai Hoang
+100
+Le Quoc Khoi        
 27
-Tan
+Tran Hoang Nghia    
 27
-Khoi handsome
-24
-Tai
+Ho Thi Thanh Lam    
 15
-ABCD
+Luu Nguyen Trung Hau
 8
-KhoiPro
+KJQne
+-1
+Yourname
+-1
+Ho Thi Huynh Mai    
 -2
+Khoine
+-2
+Khoi nua ne
+-2
+Le Quoc Khoi
+-3

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Creates new form Score board
@@ -12,7 +13,7 @@ import javax.swing.JFrame;
  */
 public class ScoreBoard extends javax.swing.JFrame {
 
-    // initiations
+    // Creates new form Score Board
     public ScoreBoard(int score, int dif) throws Exception {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -27,6 +28,7 @@ public class ScoreBoard extends javax.swing.JFrame {
     }
 
     // set title
+    @Override
     public void setTitle(String txtTitle) {
         this.txtTitle.setText(String.valueOf(txtTitle));
     }
@@ -46,6 +48,80 @@ public class ScoreBoard extends javax.swing.JFrame {
         this.txtTime.setText(String.valueOf(txtTime));
     }
 
+    // load data in storage
+    private void loadData() {
+        String fileName;
+        if (dif == 0) {
+            fileName = EASY_NAME;
+        } else if (dif == 1) {
+            fileName = NORMAL_NAME;
+        } else {
+            fileName = EXPERT_NAME;
+        }
+        try {
+            us = new UserManagement("src/data/" + fileName + ".txt");
+            us.loadUsers();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    // show top 5 highest score
+    private void showRank() {
+        String userId = showTopUserId(Integer.parseInt(txtScore.getText()));
+        txt5UserId.setText(userId);
+        String userScore = showUserScore(Integer.parseInt(txtScore.getText()));
+        txt5Score.setText(userScore);
+    }
+
+    // show top 5 user id
+    private String showTopUserId(int score) {
+        boolean isRank = false;
+        String strUserId = "";
+        int size;
+        ArrayList<User> users = us.getUsers();
+        if (users.size() < 5) {
+            size = users.size();
+        } else {
+            size = 5;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!isRank && score >= users.get(i).getScore()) {
+                strUserId += "Yourname\n";
+                isRank = true;
+            }
+            strUserId += users.get(i).getUserId() + "\n";
+        }
+        if (!isRank && size < 5) {
+            strUserId += "Yourname\n";
+        }
+        return strUserId;
+    }
+
+    // show top 5 user score
+    private String showUserScore(int score) {
+        boolean isRank = false;
+        String strUserScore = "";
+        int size;
+        ArrayList<User> users = us.getUsers();
+        if (users.size() < 5) {
+            size = users.size();
+        } else {
+            size = 5;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!isRank && score >= users.get(i).getScore()) {
+                strUserScore += String.format("%3d\n", strUserScore);
+                isRank = true;
+            }
+            strUserScore += String.format("%3d\n", users.get(i).getScore());
+        }
+        if (!isRank && size < 5) {
+            strUserScore += String.format("%3d\n", score);
+        }
+        return strUserScore;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -58,12 +134,14 @@ public class ScoreBoard extends javax.swing.JFrame {
         txtTitle = new javax.swing.JLabel();
         bttClose = new javax.swing.JLabel();
         txtUserId = new javax.swing.JTextField();
-        bttSubmit = new javax.swing.JLabel();
+        bttSave = new javax.swing.JLabel();
         txtTime = new javax.swing.JLabel();
         txtScore = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        txtaContent = new javax.swing.JTextArea();
+        txt5UserId = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txt5Score = new javax.swing.JTextArea();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -119,15 +197,15 @@ public class ScoreBoard extends javax.swing.JFrame {
         });
         getContentPane().add(txtUserId, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 345, 240, 30));
 
-        bttSubmit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        bttSubmit.setBorder(javax.swing.BorderFactory.createCompoundBorder());
-        bttSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        bttSubmit.addMouseListener(new java.awt.event.MouseAdapter() {
+        bttSave.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        bttSave.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        bttSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bttSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                bttSubmitMouseClicked(evt);
+                bttSaveMouseClicked(evt);
             }
         });
-        getContentPane().add(bttSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 350, 90, 20));
+        getContentPane().add(bttSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 350, 90, 20));
 
         txtTime.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         txtTime.setForeground(new java.awt.Color(255, 255, 255));
@@ -148,6 +226,7 @@ public class ScoreBoard extends javax.swing.JFrame {
         jPanel1.setAlignmentY(0.0F);
         jPanel1.setAutoscrolls(true);
         jPanel1.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jScrollPane1.setBackground(new java.awt.Color(127, 127, 127));
         jScrollPane1.setBorder(null);
@@ -155,27 +234,33 @@ public class ScoreBoard extends javax.swing.JFrame {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        txtaContent.setEditable(false);
-        txtaContent.setBackground(new java.awt.Color(200, 200, 200));
-        txtaContent.setColumns(20);
-        txtaContent.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtaContent.setForeground(new java.awt.Color(255, 255, 255));
-        txtaContent.setRows(2);
-        txtaContent.setBorder(null);
-        jScrollPane1.setViewportView(txtaContent);
+        txt5UserId.setEditable(false);
+        txt5UserId.setBackground(new java.awt.Color(200, 200, 200));
+        txt5UserId.setColumns(20);
+        txt5UserId.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txt5UserId.setForeground(new java.awt.Color(255, 255, 255));
+        txt5UserId.setRows(2);
+        txt5UserId.setBorder(null);
+        jScrollPane1.setViewportView(txt5UserId);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 320, 144));
+
+        jScrollPane2.setBackground(new java.awt.Color(127, 127, 127));
+        jScrollPane2.setBorder(null);
+        jScrollPane2.setForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        txt5Score.setEditable(false);
+        txt5Score.setBackground(new java.awt.Color(200, 200, 200));
+        txt5Score.setColumns(20);
+        txt5Score.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txt5Score.setForeground(new java.awt.Color(255, 255, 255));
+        txt5Score.setRows(2);
+        txt5Score.setBorder(null);
+        jScrollPane2.setViewportView(txt5Score);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 0, 50, 144));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, 360, 120));
 
@@ -185,7 +270,7 @@ public class ScoreBoard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bttSubmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttSubmitMouseClicked
+    private void bttSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttSaveMouseClicked
         try {
             User account = new User(txtUserId.getText(), Integer.parseInt(txtScore.getText()));
             account = us.checkUser(account);
@@ -197,16 +282,19 @@ public class ScoreBoard extends javax.swing.JFrame {
             if (tmp <= account.getScore()) {
                 return;
             }
-
-            // Display login successfully notification
             us.changeScore(txtUserId.getText(), Integer.parseInt(txtScore.getText()));
-
-            this.setVisible(false);
-            this.dispose();
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoard.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            JOptionPane.showMessageDialog(null, "Saved successfully!");
+            Menu menu = new Menu();
+            menu.setVisible(true);
+            menu.pack();
+            menu.setLocationRelativeTo(null);
+            menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            this.dispose();
         }
-    }//GEN-LAST:event_bttSubmitMouseClicked
+    }//GEN-LAST:event_bttSaveMouseClicked
 
     private void bttCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttCloseMouseClicked
         Menu menu = new Menu();
@@ -226,7 +314,6 @@ public class ScoreBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_bttCloseMouseExited
 
     private void bttCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttCloseMousePressed
-
     }//GEN-LAST:event_bttCloseMousePressed
 
     private int xCoordinate, yCoordinate;
@@ -240,110 +327,32 @@ public class ScoreBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_formMouseDragged
 
     private void txtUserIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserIdActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtUserIdActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(ScoreBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(ScoreBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(ScoreBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ScoreBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    new ScoreBoard().setVisible(true);
-//                } catch (Exception ex) {
-//                    Logger.getLogger(ScoreBoard.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        });
-//    }
+    // variables
     private int dif;
-    private int score;
+    private int score, userScore;
     private ArrayList<User> users;
     private static UserManagement us;
+
+    // constants
+    private static final String EASY_NAME = "easy";
+    private static final String NORMAL_NAME = "normal";
+    private static final String EXPERT_NAME = "expert";
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
     private javax.swing.JLabel bttClose;
-    private javax.swing.JLabel bttSubmit;
+    private javax.swing.JLabel bttSave;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea txt5Score;
+    private javax.swing.JTextArea txt5UserId;
     public javax.swing.JLabel txtScore;
     private javax.swing.JLabel txtTime;
     private javax.swing.JLabel txtTitle;
     public javax.swing.JTextField txtUserId;
-    private javax.swing.JTextArea txtaContent;
     // End of variables declaration//GEN-END:variables
 
-    private void showRank() {
-        String rank = checkRank(Integer.parseInt(txtScore.getText()));
-        txtaContent.setText(rank);
-        
-    }
-
-    private String checkRank(int score) {
-        boolean isRank = false;
-        String s = "";
-        int size;
-        ArrayList<User> users = us.getUsers();
-        if (users.size() < 5) {
-            size = users.size();
-        } else {
-            size = 5;
-        }
-        for (int i = 0; i < size; i++) {
-            if (!isRank && score >= users.get(i).getScore()) {
-                s += String.format("%-50s%-3d\n", "Yourname", score);
-                isRank = true;
-            }
-            s += String.format("%-50s%-3d\n", users.get(i).getUserId(), users.get(i).getScore());
-        }
-        if (!isRank && size < 5) {
-            s += String.format("%-50s%-3d\n", "Yourname", score);
-        }
-        return s;
-    }
-
-    private void loadData() {
-        String fileName;
-        if (dif == 0) {
-            fileName = "easy";
-        } else if (dif == 1) {
-            fileName = "normal";
-        } else {
-            fileName = "expert";
-        }
-
-        try {
-            us = new UserManagement("src/data/" + fileName + ".txt");
-            us.loadUsers();
-        } catch (Exception ex) {
-            Logger.getLogger(ScoreBoard.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
 }

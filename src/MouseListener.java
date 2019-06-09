@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
- * MouseListener is a MouseListener implemented
+ * It is a MouseListener implemented
  * @author KhoiLQCE130023
  */
 public class MouseListener extends MouseAdapter {

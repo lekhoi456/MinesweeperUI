@@ -1,5 +1,6 @@
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -21,21 +22,19 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Game
-     */
+    // Creates new form Game
     public GamePanel() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setIconImage(favicon);
         this.setVisible(true);
     }
-    
+
     // set  difficult
     public void setDif(int dif) {
-       this.dif = dif;
+        this.dif = dif;
     }
-    
+
     // get difficult
     public int getDif() {
         return dif;
@@ -68,7 +67,7 @@ public class GamePanel extends javax.swing.JFrame {
                 width = NORMAL_WIDTH;
                 height = NORMAL_HEIGHT;
                 this.setTitle(NORMAL_NAME);
-               break;
+                break;
             case EXPERT:
                 numMines = EXPERT_NUM_MINES;
                 numMinesLeft = EXPERT_NUM_MINES;
@@ -81,7 +80,7 @@ public class GamePanel extends javax.swing.JFrame {
         }
     }
 
-    // load image and scale it
+    // load images and scale its
     private void initImages(int dif) {
         images = new ImageIcon[14];
         for (int i = 0; i < 14; i++) {
@@ -108,11 +107,11 @@ public class GamePanel extends javax.swing.JFrame {
 
     // set layouts
     private void setLayouts() {
-        
         // time and score
         lblTime.setText("00:00");
         lblScore.setText("" + numMinesLeft);
 
+        // game board
         gameBoard.setLayout(new BorderLayout());
         JPanel gameZone = new JPanel();
         gameZone.setLayout(new GridLayout(height, width));
@@ -123,7 +122,6 @@ public class GamePanel extends javax.swing.JFrame {
             for (int col = 0; col < width; col++) {
                 cellButtons[col][row] = new JButton();
                 cellButtons[col][row].setIcon(images[UNOPENED]);
-
                 cellButtons[col][row].addMouseListener(new MouseListener(this, row, col));
                 gameZone.add(cellButtons[col][row]);
             }
@@ -142,7 +140,7 @@ public class GamePanel extends javax.swing.JFrame {
         Random rand = new Random();
         ArrayList<Integer> rowMines = new ArrayList<>();
         ArrayList<Integer> colMines = new ArrayList<>();
-        
+
         // generate mines
         do {
             int tempRow = rand.nextInt(height);
@@ -158,8 +156,8 @@ public class GamePanel extends javax.swing.JFrame {
                 exists = true;
             }
             // check if the prospective mine is in the cells surrounding the user's click
-            for (int i = x - 1; i <= x + 1 && !exists; i++) {
-                for (int j = y - 1; j <= y + 1 && !exists; j++) {
+            for (int i = x - 1; !exists && i <= x + 1; i++) {
+                for (int j = y - 1; !exists && j <= y + 1; j++) {
                     try {
                         if (tempRow == i && tempCol == j) {
                             exists = true;
@@ -175,10 +173,8 @@ public class GamePanel extends javax.swing.JFrame {
                 colMines.add(tempCol);
             }
         } while (rowMines.size() < numMines);
-        
 
-        
-        // iniitialize cells
+        // initialize cells
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 cells[col][row] = new Cell();
@@ -201,15 +197,14 @@ public class GamePanel extends javax.swing.JFrame {
                 }
             }
         }
-        
-        // Cheating game
+
+        // Cheating game: show number of cell to console
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
-                System.out.printf("%3d ",cells[j][i].getStatus());
+                System.out.printf("%3d ", cells[j][i].getStatus());
             }
             System.out.println("");
         }
-        
     }
 
     // uncover cell
@@ -221,7 +216,7 @@ public class GamePanel extends javax.swing.JFrame {
         }
         if (cells[col][row].isMine()) {
             if (!cellButtons[col][row].getIcon().equals(images[FLAG])) {
-                mineTripped();
+                mineWrong();
             }
         } else if (cells[col][row].isSafe()) {
             cells[col][row].uncover();
@@ -281,11 +276,12 @@ public class GamePanel extends javax.swing.JFrame {
         } else // the mines were not marked correctly
         {
             if (numMinesMarked == numMinesSurrounding) {
-                mineTripped();
+                mineWrong();
             }
         }
     }
 
+    // mark the mine
     public void markMine(int row, int col) {
         if (cellButtons[col][row].isEnabled()) {
             if (cellButtons[col][row].getIcon().equals(images[UNOPENED])) {
@@ -298,7 +294,8 @@ public class GamePanel extends javax.swing.JFrame {
         }
     }
 
-    private void mineTripped() throws Exception {
+    // the mine is wrong
+    private void mineWrong() throws Exception {
         timerThread.interrupt();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -307,7 +304,7 @@ public class GamePanel extends javax.swing.JFrame {
                     cell.setIcon(images[FLATX]);
                 } else if ((cell.getIcon().equals(images[FLAG])) && cells[col][row].isMine()) {
                     cell.setIcon(images[MINE]);
-                    score+=10;
+                    score += 10;
                 } else if (cells[col][row].isMine()) {
                     cell.setIcon(images[HOLE]);
                 }
@@ -316,7 +313,7 @@ public class GamePanel extends javax.swing.JFrame {
         numMinesLeft--;
         isWin = false;
         JOptionPane.showMessageDialog(null, "Game over. You lose!", "Minesweeper 2019", 1);
-        showPointPanel();
+        showScoreBoard();
     }
 
     private void checkWin() throws Exception {
@@ -326,19 +323,20 @@ public class GamePanel extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Congratulations. You won!", "Minesweeper 2019", 1);
             switch (dif) {
                 case 0:
-                    score = EASY_NUM_MINES*10;
+                    score = EASY_NUM_MINES * 10;
                     break;
                 case 1:
-                    score = NORMAL_NUM_MINES*10;
+                    score = NORMAL_NUM_MINES * 10;
                     break;
-                case 2: 
-                    score = EXPERT_NUM_MINES*10;
+                case 2:
+                    score = EXPERT_NUM_MINES * 10;
                     break;
             }
-            showPointPanel();
+            showScoreBoard();
         }
     }
 
+    // close this panel and open menu frame
     public void closePanel() throws Exception {
         timerThread.interrupt();
         time = 0;
@@ -349,8 +347,9 @@ public class GamePanel extends javax.swing.JFrame {
         menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.dispose();
     }
-    
-    public void showPointPanel() throws Exception {
+
+    // show score board and close this panel
+    public void showScoreBoard() throws Exception {
         ScoreBoard gamer = new ScoreBoard(score, dif);
         gamer.setVisible(true);
         gamer.pack();
@@ -365,6 +364,7 @@ public class GamePanel extends javax.swing.JFrame {
         this.dispose();
     }
 
+    // the score
     private void score(boolean inc) {
         if (inc) {
             numMinesLeft = numMinesLeft + 1;
@@ -374,15 +374,15 @@ public class GamePanel extends javax.swing.JFrame {
         lblScore.setText("" + numMinesLeft);
     }
 
+    // label mine left
     public class lblMinesLeft extends JLabel {
-
         public lblMinesLeft(int numMinesLeft) {
             lblScore = new lblMinesLeft(numMinesLeft);
         }
     }
 
+    // increase time +1 every 1 second
     private class TimerThread extends Thread {
-
         @Override
         public void run() {
             try {
@@ -394,9 +394,9 @@ public class GamePanel extends javax.swing.JFrame {
             } catch (InterruptedException e) {
             }
         }
-
     }
 
+    // convert second to MM:SS
     private String secToTime(int sec) {
         int seconds = sec % 60;
         int minutes = sec / 60;
@@ -407,9 +407,13 @@ public class GamePanel extends javax.swing.JFrame {
         }
         return String.format("%02d:%02d", minutes, seconds);
     }
-    
+
     public int getScore() {
         return numMinesLeft;
+    }
+
+    public void setTitle(String txtTitle) {
+        this.txtTitle.setText(String.valueOf(txtTitle));
     }
 
     /**
@@ -421,6 +425,8 @@ public class GamePanel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bttMinimize = new javax.swing.JLabel();
+        txtTitle = new javax.swing.JLabel();
         bttClose = new javax.swing.JLabel();
         lblScore = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
@@ -440,6 +446,20 @@ public class GamePanel extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        bttMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        bttMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bttMinimizeMouseClicked(evt);
+            }
+        });
+        getContentPane().add(bttMinimize, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 4, 40, 30));
+
+        txtTitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTitle.setForeground(new java.awt.Color(255, 255, 255));
+        txtTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        txtTitle.setText("Minesweeper");
+        getContentPane().add(txtTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 6, -1, 20));
 
         bttClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/close.png"))); // NOI18N
         bttClose.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -522,6 +542,10 @@ public class GamePanel extends javax.swing.JFrame {
 
     }//GEN-LAST:event_bttCloseMousePressed
 
+    private void bttMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttMinimizeMouseClicked
+        this.setState(Frame.ICONIFIED);
+    }//GEN-LAST:event_bttMinimizeMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -562,46 +586,39 @@ public class GamePanel extends javax.swing.JFrame {
     private static final int EASY = 0;
     private static final int NORMAL = 1;
     private static final int EXPERT = 2;
-
     private static final String EASY_NAME = "Minesweeper 2019 - Easy Level";
     private static final String NORMAL_NAME = "Minesweeper 2019 - Normal Level";
     private static final String EXPERT_NAME = "Minesweeper 2019 - Expert Level";
-
     private static final int EASY_SIZE_CELL = 72;
     private static final int NORMAL_SIZE_CELL = 36;
     private static final int EXPERT_SIZE_CELL = 25;
-
     private static final int EASY_NUM_MINES = 10;
     private static final int NORMAL_NUM_MINES = 40;
     private static final int EXPERT_NUM_MINES = 99;
-
     private static final int EASY_HEIGHT = 9;
     private static final int EASY_WIDTH = 9;
     private static final int NORMAL_HEIGHT = 16;
     private static final int NORMAL_WIDTH = 16;
     private static final int EXPERT_HEIGHT = 24;
     private static final int EXPERT_WIDTH = 24;
-
     private static final int MINE = 9;
     private static final int HOLE = 10;
     private static final int FLAG = 11;
     private static final int FLATX = 12;
     private static final int UNOPENED = 13;
 
-    // instance gameZones
+    // instance gameboard
     private JButton[][] cellButtons;
     private Cell[][] cells;
 
-    // images of tiles
+    // image of cells
     private ImageIcon[] images;
     private Image favicon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Images/favicon.png"));
-    
-    // static dificult
-    private int dif;
+
+    private int dif; // difficult
     private boolean isWin;
 
-    
-    // static gameZones
+    // variables of gameboard
     private int score = 0;
     private int numMines;
     public int numMinesLeft;
@@ -613,8 +630,10 @@ public class GamePanel extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
     private javax.swing.JLabel bttClose;
+    private javax.swing.JLabel bttMinimize;
     private javax.swing.JInternalFrame gameBoard;
     private javax.swing.JLabel lblScore;
     private javax.swing.JLabel lblTime;
+    private javax.swing.JLabel txtTitle;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * @author KhoiLQ
+ * User management
+ * @author KhoiLQCE130023
  */
 public class UserManagement {
 
@@ -48,8 +49,9 @@ public class UserManagement {
                 int score;
                 // Read the number of users
                 line = br.readLine();
-                if (line != null) 
+                if (line != null) {
                     this.numberOfUser = Integer.parseInt(line);
+                }
 
                 for (int i = 0; i < this.numberOfUser; i++) {
                     // Read the user infomation
@@ -168,7 +170,6 @@ public class UserManagement {
         return null;
     }
 
-    
     /**
      * Show all users
      *

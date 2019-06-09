@@ -7,14 +7,13 @@ import java.net.URL;
 import javax.swing.JFrame;
 
 /**
- *
+ * Main frame
  * @author KhoiLQCE130023
  */
 public class Menu extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Minesweeper
-     */
+
+    // create new menu
     public Menu() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -141,6 +140,7 @@ public class Menu extends javax.swing.JFrame {
     private void bttEasyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttEasyMouseClicked
         GamePanel gamePanel = new GamePanel();
         gamePanel.setDif(0);
+        gamePanel.setTitle("Easy Level - Minesweeper 2019");
         gamePanel.gameBoard();
         gamePanel.setVisible(true);
         gamePanel.pack();
@@ -152,6 +152,7 @@ public class Menu extends javax.swing.JFrame {
     private void bttNormalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttNormalMouseClicked
         GamePanel gamePanel = new GamePanel();
         gamePanel.setDif(1);
+        gamePanel.setTitle("Normal Level - Minesweeper 2019");
         gamePanel.gameBoard();
         gamePanel.setVisible(true);
         gamePanel.pack();
@@ -163,6 +164,7 @@ public class Menu extends javax.swing.JFrame {
     private void bttExpertMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttExpertMouseClicked
         GamePanel gamePanel = new GamePanel();
         gamePanel.setDif(2);
+        gamePanel.setTitle("Expert Level - Minesweeper 2019");
         gamePanel.gameBoard();
         gamePanel.setVisible(true);
         gamePanel.pack();

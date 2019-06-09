@@ -10,22 +10,15 @@ public class User implements Comparable<User>{
     private int score;
     
 
-    /**
-     * The Get User ID Method
-     *
-     * @return
-     */
+
+     // The Get User ID Method
     public String getUserId() {
         return userId;
     }
 
-    /**
-     * The Set User ID Method
-     *
-     * @param userId
-     * @throws Exception
-     */
-    public void setUserId(String userId) throws Exception {
+    
+     // The Set User ID Method
+     public void setUserId(String userId) throws Exception {
         if (userId.trim().equals("")) {
             throw new Exception("The User ID can't be empty!");
         } else {
@@ -33,36 +26,24 @@ public class User implements Comparable<User>{
         }
     }
 
-    /**
-     * The Get score Method
-     *
-     * @return
-     */
+    // The Get score Method
     public int getScore() {
         return score;
     }
 
-    /**
-     * The Set score Method
-     *
-     * @param score
-     * @throws Exception
-     */
+   
+     // The Set score Method
     public void setScore(int score) throws Exception {
             this.score = score;
     }
 
-    /**
-     * Create new record
-     *
-     * @param userId
-     * @param score
-     */
+    // create a new user
     public User(String userId, int score) {
         this.userId = userId;
         this.score = score;
     }
 
+    // compare and sort
     @Override
     public int compareTo(User t) {
         if (this.getScore() > t.getScore()) return -1;

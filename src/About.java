@@ -1,5 +1,6 @@
 
 import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -16,9 +17,7 @@ import javax.swing.JFrame;
  */
 public class About extends javax.swing.JFrame {
 
-    /**
-     * Creates new form About
-     */
+    // Creates new form About
     public About() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -37,6 +36,7 @@ public class About extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bttMinimize = new javax.swing.JLabel();
         bttHTPlay = new javax.swing.JLabel();
         bttClose = new javax.swing.JLabel();
         bttContact = new javax.swing.JLabel();
@@ -57,6 +57,14 @@ public class About extends javax.swing.JFrame {
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        bttMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        bttMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bttMinimizeMouseClicked(evt);
+            }
+        });
+        getContentPane().add(bttMinimize, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 0, 40, 30));
 
         bttHTPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         bttHTPlay.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -128,7 +136,6 @@ public class About extends javax.swing.JFrame {
     }//GEN-LAST:event_bttCloseMouseExited
 
     private void bttCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttCloseMousePressed
-
     }//GEN-LAST:event_bttCloseMousePressed
 
     // close the frame
@@ -153,6 +160,10 @@ public class About extends javax.swing.JFrame {
             Logger.getLogger(About.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_bttHTPlayMouseClicked
+
+    private void bttMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bttMinimizeMouseClicked
+        this.setState(Frame.ICONIFIED);
+    }//GEN-LAST:event_bttMinimizeMouseClicked
 
     /**
      * @param args the command line arguments
@@ -194,5 +205,6 @@ public class About extends javax.swing.JFrame {
     private javax.swing.JLabel bttClose;
     private javax.swing.JLabel bttContact;
     private javax.swing.JLabel bttHTPlay;
+    private javax.swing.JLabel bttMinimize;
     // End of variables declaration//GEN-END:variables
 }
