@@ -1,23 +1,7 @@
-11
-Nguyen Le Khai Hoang
+3
+Phong
 100
-Le Quoc Khoi        
-27
-Tran Hoang Nghia    
-27
-Ho Thi Thanh Lam    
-15
-Luu Nguyen Trung Hau
-8
-KJQne
--1
+Khoi
+49
 Yourname
 -1
-Ho Thi Huynh Mai    
--2
-Khoine
--2
-Khoi nua ne
--2
-Le Quoc Khoi
--3

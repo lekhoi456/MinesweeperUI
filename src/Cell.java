@@ -34,6 +34,11 @@ public class Cell {
         status = newStatus;
     }
 
+    // add 1 to number in cell
+    public void addToStatus() {
+        status = status + 1;
+    }
+    
     // method if uncover
     public void uncover() {
         this.uncovered = true;
@@ -58,10 +63,4 @@ public class Cell {
         }
         return false;
     }
-
-    // add 1 to number in cell
-    public void addToStatus() {
-        status = status + 1;
-    }
-
 }

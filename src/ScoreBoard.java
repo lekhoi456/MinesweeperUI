@@ -22,7 +22,7 @@ public class ScoreBoard extends javax.swing.JFrame {
         this.setVisible(true);
         this.score = score;
         this.dif = dif;
-        txtScore.setText(String.valueOf(score));
+        setScore(score);
         loadData();
         showRank();
     }
@@ -37,7 +37,7 @@ public class ScoreBoard extends javax.swing.JFrame {
     public void setScore(int score) {
         this.txtScore.setText(String.valueOf(score));
     }
-
+    
     // set difficult
     public void setDiff(int dif) {
         this.dif = dif;
@@ -70,7 +70,7 @@ public class ScoreBoard extends javax.swing.JFrame {
     private void showRank() {
         String userId = showTopUserId(Integer.parseInt(txtScore.getText()));
         txt5UserId.setText(userId);
-        String userScore = showUserScore(Integer.parseInt(txtScore.getText()));
+        String userScore = showTopUserScore(Integer.parseInt(txtScore.getText()));
         txt5Score.setText(userScore);
     }
 
@@ -99,7 +99,7 @@ public class ScoreBoard extends javax.swing.JFrame {
     }
 
     // show top 5 user score
-    private String showUserScore(int score) {
+    private String showTopUserScore(int score) {
         boolean isRank = false;
         String strUserScore = "";
         int size;
@@ -111,10 +111,10 @@ public class ScoreBoard extends javax.swing.JFrame {
         }
         for (int i = 0; i < size; i++) {
             if (!isRank && score >= users.get(i).getScore()) {
-                strUserScore += String.format("%3d\n", strUserScore);
+                strUserScore += String.format("%3s\n", strUserScore);
                 isRank = true;
             }
-            strUserScore += String.format("%3d\n", users.get(i).getScore());
+            strUserScore += String.format("%3s\n", users.get(i).getScore());
         }
         if (!isRank && size < 5) {
             strUserScore += String.format("%3d\n", score);

@@ -205,6 +205,7 @@ public class GamePanel extends javax.swing.JFrame {
             }
             System.out.println("");
         }
+        System.out.println("\n");
     }
 
     // uncover cell
@@ -361,6 +362,7 @@ public class GamePanel extends javax.swing.JFrame {
         } else {
             gamer.setTitle("Better Lucky Next Time!");
         }
+        time=0;
         this.dispose();
     }
 
